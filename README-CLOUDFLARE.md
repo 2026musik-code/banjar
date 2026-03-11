@@ -1,9 +1,9 @@
 # Panduan Deploy ZONA BANJAR ke Cloudflare
 
-Aplikasi ini dibangun menggunakan **React (Vite)**. Cara terbaik dan paling optimal untuk men-deploy aplikasi ini ke ekosistem Cloudflare adalah menggunakan **Cloudflare Pages** (yang secara internal berjalan di atas infrastruktur **Cloudflare Workers**).
+Aplikasi ini dibangun menggunakan **React (Vite)** dan **Cloudflare Workers**. 
 
-## Mengapa Cloudflare Pages?
-Cloudflare Pages dirancang khusus untuk aplikasi frontend (seperti React/Vite) dan mendukung **Functions** (Cloudflare Workers) jika Anda ingin menambahkan backend API.
+## Mengapa Cloudflare Workers?
+Proyek ini menggunakan fitur terbaru **Cloudflare Workers Assets** yang memungkinkan Anda men-deploy aplikasi frontend (React/Vite) sekaligus dengan backend API dalam satu Worker yang sama.
 
 ---
 
@@ -17,20 +17,19 @@ Ini adalah cara paling mudah. Setiap kali Anda melakukan `git push`, Cloudflare 
 2. **Buka Dashboard Cloudflare:**
    Login ke [Cloudflare Dashboard](https://dash.cloudflare.com/), pilih menu **Workers & Pages**.
 3. **Buat Aplikasi Baru:**
-   Klik tombol **Create application** > Pilih tab **Pages** > Klik **Connect to Git**.
+   Klik tombol **Create application** > Pilih tab **Workers** > Klik **Connect to Git**.
 4. **Pilih Repository:**
    Pilih repository GitHub tempat Anda mengekspor proyek ini.
 5. **Konfigurasi Build:**
-   - Framework preset: **Vite**
    - Build command: `npm run build`
-   - Build output directory: `dist`
+   - Deploy command: `npx wrangler deploy`
 6. **Tambahkan Environment Variable (SANGAT PENTING):**
-   - Scroll ke bawah, klik **Environment variables (advanced)**.
+   - Setelah deploy selesai, buka menu **Settings > Variables and Secrets** di pengaturan Worker Anda.
    - Tambahkan variabel baru:
      - Variable name: `GEMINI_API_KEY`
      - Value: `(Masukkan API Key Gemini Anda di sini)`
-7. **Deploy:**
-   Klik **Save and Deploy**. Selesai!
+7. **Deploy Ulang:**
+   Agar API Key terbaca, lakukan deploy ulang atau push perubahan kecil ke GitHub.
 
 ---
 
@@ -54,20 +53,9 @@ Jika Anda ingin men-deploy dari komputer lokal Anda.
    npm run deploy
    ```
 5. **Tambahkan API Key di Dashboard:**
-   Setelah berhasil di-deploy, buka Dashboard Cloudflare > Pages > `zona-banjar-ai` > Settings > Environment variables. Tambahkan `GEMINI_API_KEY` dan isi dengan API Key Anda.
-   *(Catatan: Anda harus melakukan deploy ulang / retry deployment agar API Key ini masuk ke dalam build).*
+   Setelah berhasil di-deploy, buka Dashboard Cloudflare > Workers & Pages > `zona-banjar-ai` > Settings > Variables and Secrets. Tambahkan `GEMINI_API_KEY` dan isi dengan API Key Anda.
 
 ---
 
-## Menambahkan Backend API (Cloudflare Workers)
-Jika Anda ingin menyembunyikan API Key dari browser (untuk keamanan production), Anda bisa membuat backend API menggunakan **Cloudflare Pages Functions**.
-
-Cukup buat folder `functions/` di root proyek ini. File di dalamnya akan otomatis menjadi endpoint API (Cloudflare Workers).
-
-Contoh: Buat file `functions/api/hello.ts`
-```typescript
-export async function onRequest(context) {
-  return new Response("Hello from Cloudflare Worker!");
-}
-```
-Endpoint ini akan bisa diakses di `https://zona-banjar-ai.pages.dev/api/hello`.
+## Backend API (Cloudflare Workers)
+Backend API diatur di dalam file `src/worker.ts`. File ini bertugas untuk menangani rute API (seperti `/api/keys`) dan juga menyajikan file statis React (SPA routing).
