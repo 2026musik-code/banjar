@@ -1,0 +1,17 @@
+name = "zona-banjar-ai"
+compatibility_date = "2024-03-11"
+pages_build_output_dir = "dist"
+
+# Konfigurasi ini digunakan untuk men-deploy aplikasi React (Vite) ke Cloudflare Pages.
+# Cloudflare Pages berjalan di atas infrastruktur Cloudflare Workers.
+
+# Binding R2 Bucket
+# Pastikan Anda telah membuat R2 bucket bernama "datauser" di dashboard Cloudflare Anda.
+[[r2_buckets]]
+binding = "datauser"
+bucket_name = "datauser"
+
+[vars]
+# PENTING: Jangan masukkan API Key asli Anda di file ini jika akan di-commit ke GitHub.
+# Tambahkan variabel GEMINI_API_KEY ini melalui Dashboard Cloudflare Pages Anda:
+# Buka Pages > zona-banjar-ai > Settings > Environment variables > Production/Preview

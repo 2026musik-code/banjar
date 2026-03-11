@@ -1,0 +1,5 @@
+{
+  "name": "ZONA BANJAR",
+  "description": "Aplikasi AI Mewah dengan fitur Chat, Panggilan Suara, Pembuatan Gambar, dan Video.",
+  "requestFramePermissions": ["camera", "microphone"]
+}
