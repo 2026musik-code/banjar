@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ImagePlus, Loader2, Download, Wand2 } from 'lucide-react';
-import { getGeminiClient } from '../lib/gemini';
+import { getGeminiClient, ensureApiKey } from '../lib/gemini';
 import { motion } from 'motion/react';
 
 export default function ImageGen() {
@@ -8,10 +8,35 @@ export default function ImageGen() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [hasKey, setHasKey] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkKey = async () => {
+      if (typeof window !== 'undefined' && (window as any).aistudio) {
+        const keyStatus = await (window as any).aistudio.hasSelectedApiKey();
+        setHasKey(keyStatus);
+      } else {
+        setHasKey(true); // Fallback if not in AI Studio
+      }
+    };
+    checkKey();
+  }, []);
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt.trim() || isGenerating) return;
+
+    try {
+      await ensureApiKey();
+      // Re-check key after prompt
+      if (typeof window !== 'undefined' && (window as any).aistudio) {
+        const keyStatus = await (window as any).aistudio.hasSelectedApiKey();
+        if (!keyStatus) return; // User cancelled
+      }
+    } catch (err) {
+      console.error("API Key error:", err);
+      return;
+    }
 
     setIsGenerating(true);
     setError(null);
@@ -20,10 +45,8 @@ export default function ImageGen() {
     try {
       const ai = getGeminiClient();
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash-image',
-        contents: {
-          parts: [{ text: prompt }]
-        },
+        model: 'gemini-3.1-flash-image-preview',
+        contents: prompt,
         config: {
           imageConfig: {
             aspectRatio: "1:1"
