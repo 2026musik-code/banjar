@@ -1,11 +1,19 @@
 interface Env {
   datauser: any; // R2Bucket
   ASSETS: { fetch: (req: Request) => Promise<Response> };
+  GEMINI_API_KEY?: string;
 }
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
+
+    // Route: /api/config
+    if (url.pathname === '/api/config') {
+      return new Response(JSON.stringify({ geminiApiKey: env.GEMINI_API_KEY || null }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
 
     // Route: /api/hello
     if (url.pathname === '/api/hello') {

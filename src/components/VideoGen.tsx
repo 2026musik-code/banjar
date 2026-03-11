@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Video, Loader2, Download, Film, AlertCircle } from 'lucide-react';
-import { getGeminiClient, ensureApiKey } from '../lib/gemini';
+import { getGeminiClient, ensureApiKey, getApiKey } from '../lib/gemini';
 import { motion } from 'motion/react';
 
 export default function VideoGen() {
@@ -70,7 +70,7 @@ export default function VideoGen() {
       
       if (downloadLink) {
         // Fetch video with API key header
-        const apiKey = process.env.GEMINI_API_KEY || '';
+        const apiKey = getApiKey() || '';
         const response = await fetch(downloadLink, {
           method: 'GET',
           headers: {
@@ -95,7 +95,7 @@ export default function VideoGen() {
         // Reset key status to prompt again
         setHasKey(false);
       } else {
-        setError('Terjadi kesalahan saat membuat video. Pastikan API Key Anda memiliki akses ke model Veo.');
+        setError(`Terjadi kesalahan: ${err.message || 'Pastikan API Key Anda memiliki akses ke model Veo.'}`);
       }
     } finally {
       setIsGenerating(false);

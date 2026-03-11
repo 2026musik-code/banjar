@@ -1,16 +1,24 @@
 import { GoogleGenAI } from '@google/genai';
 
-// Initialize with the API key from the environment or user selection
-export const getGeminiClient = () => {
+export const getApiKey = () => {
   let apiKey = process.env.GEMINI_API_KEY;
   
-  // Try to get user-selected key from localStorage
   if (typeof window !== 'undefined') {
     const savedKey = localStorage.getItem('active_gemini_key_value');
+    const envKey = localStorage.getItem('env_gemini_key');
+    
     if (savedKey) {
       apiKey = savedKey;
+    } else if (envKey) {
+      apiKey = envKey;
     }
   }
+  return apiKey;
+};
+
+// Initialize with the API key from the environment or user selection
+export const getGeminiClient = () => {
+  const apiKey = getApiKey();
 
   if (!apiKey) {
     throw new Error('API Key tidak ditemukan. Silakan tambahkan API Key di menu Pengaturan.');
@@ -23,7 +31,8 @@ export const getGeminiClient = () => {
 export const ensureApiKey = async () => {
   if (typeof window !== 'undefined') {
     const savedKey = localStorage.getItem('active_gemini_key_value');
-    if (savedKey) return true;
+    const envKey = localStorage.getItem('env_gemini_key');
+    if (savedKey || envKey) return true;
 
     // Fallback to AI Studio platform key selection if available
     if ((window as any).aistudio) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageSquare, PhoneCall, Image as ImageIcon, Video, Menu, X, Settings } from 'lucide-react';
 import Chat from './components/Chat';
 import VoiceCall from './components/VoiceCall';
@@ -14,6 +14,18 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('chat');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  useEffect(() => {
+    // Fetch server-side config (e.g. API keys from Cloudflare Worker env)
+    fetch('/api/config')
+      .then(res => res.json())
+      .then(data => {
+        if (data.geminiApiKey) {
+          localStorage.setItem('env_gemini_key', data.geminiApiKey);
+        }
+      })
+      .catch(err => console.error('Failed to fetch config:', err));
+  }, []);
 
   const tabs = [
     { id: 'chat', label: 'Chat & Analisa', icon: MessageSquare },

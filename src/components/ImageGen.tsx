@@ -23,6 +23,11 @@ export default function ImageGen() {
         model: 'gemini-2.5-flash-image',
         contents: {
           parts: [{ text: prompt }]
+        },
+        config: {
+          imageConfig: {
+            aspectRatio: "1:1"
+          }
         }
       });
 
@@ -40,9 +45,9 @@ export default function ImageGen() {
       } else {
         setError('Gagal menghasilkan gambar. Coba deskripsi lain.');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Image generation error:', err);
-      setError('Terjadi kesalahan saat menghubungi server.');
+      setError(`Terjadi kesalahan: ${err.message || 'Gagal menghubungi server.'}`);
     } finally {
       setIsGenerating(false);
     }
