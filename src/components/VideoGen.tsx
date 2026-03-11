@@ -49,13 +49,8 @@ export default function VideoGen() {
       const ai = getGeminiClient();
       
       let operation = await ai.models.generateVideos({
-        model: 'veo-3.1-fast-generate-preview',
+        model: 'veo-3.1-generate-preview',
         prompt: prompt,
-        config: {
-          numberOfVideos: 1,
-          resolution: '720p',
-          aspectRatio: '16:9'
-        }
       });
 
       setProgress('Video sedang diproses. Ini mungkin memakan waktu beberapa menit...');
