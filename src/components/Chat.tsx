@@ -184,7 +184,7 @@ export default function Chat() {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="p-3 text-text-muted hover:text-accent transition-colors rounded-xl bg-surface border border-border hover:border-accent/50"
+            className="h-[52px] w-[52px] flex items-center justify-center shrink-0 text-text-muted hover:text-accent transition-colors rounded-xl bg-surface border border-border hover:border-accent/50"
           >
             <ImageIcon className="w-6 h-6" />
           </button>
@@ -193,7 +193,7 @@ export default function Chat() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ketik pesan Anda di sini..."
-              className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-text placeholder:text-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent resize-none min-h-[52px] max-h-32"
+              className="w-full block bg-surface border border-border rounded-xl px-4 py-3 text-text placeholder:text-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent resize-none min-h-[52px] max-h-32"
               rows={1}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -206,7 +206,7 @@ export default function Chat() {
           <button
             type="submit"
             disabled={(!input.trim() && !image) || isLoading}
-            className="p-3 bg-accent text-white rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-[52px] w-[52px] flex items-center justify-center shrink-0 bg-accent text-white rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Send className="w-6 h-6" />
           </button>
